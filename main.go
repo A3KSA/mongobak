@@ -18,6 +18,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var version = "dev"
+
 type Config struct {
 	URI string `json:"uri"`
 	DB  string `json:"db"`
@@ -47,7 +49,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Println(`mongobak - MongoDB JSON backup tool
+	fmt.Println(`mongobak - MongoDB JSON backup tool (version ` + version + `)
 
 Commands:
   connect   Test connection and save config locally
