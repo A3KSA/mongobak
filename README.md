@@ -33,7 +33,7 @@ curl -L https://github.com/automation3000/mongobak/releases/latest/download/mong
 chmod +x mongobak
 ```
 
-##Usage
+## Usage
 Connect to MongoDB
 Test the connection and store configuration locally:
 
@@ -97,7 +97,9 @@ Example:
 {"_id":{"$oid":"64f1c2..."},"name":"example","createdAt":{"$date":"2025-01-01T12:00:00Z"}}
 ```
 
-Build from source
+---
+
+## Build from source
 Requirements:
 
 Go 1.22+
@@ -120,6 +122,15 @@ Releases are automatically built and published on GitHub when a version tag is p
 git tag v1.0.0
 git push origin v1.0.0
 ```
+
+---
+
+## Checksums
+
+Each release includes a `checksums.txt` file containing SHA-256 hashes
+for all published binaries.
+
+---
 
 ## License
 This project is licensed under the MIT License.
