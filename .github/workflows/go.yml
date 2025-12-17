@@ -1,0 +1,66 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build binaries
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [linux, windows, darwin]
+        arch: [amd64, arm64]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+        run: |
+          mkdir -p dist
+          BIN_NAME=mongobak
+          if [ "$GOOS" = "windows" ]; then
+            BIN_NAME="$BIN_NAME.exe"
+          fi
+
+          go build \
+            -ldflags="-s -w -X main.version=${{ github.ref_name }}" \
+            -o dist/mongobak-${{ matrix.os }}-${{ matrix.arch }}${BIN_NAME##mongobak}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mongobak-${{ matrix.os }}-${{ matrix.arch }}
+          path: dist/*
+  
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*
+          generate_release_notes: true
